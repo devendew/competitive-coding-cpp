@@ -1,4 +1,4 @@
-#include <iostream.h>
+#include <iostream>
 using namespace std;
 
 class List {
@@ -16,8 +16,8 @@ public:
   void removelastnode();
   void traverse();
   void count();
-  friend void insertfirstnode(List *node);
-  void removefirstnode(List *node);
+  friend void insertfirstnode(List **ptr);
+  friend void removefirstnode(List **ptr);
 };
 
 void List::insertlastnode(List *node) {
@@ -59,21 +59,28 @@ void List::count() {
   cout << "Count:" << counter << endl;
 }
 
-void insertfirstnode(List *first) {
+void insertfirstnode(List **ptr) {
   int data;
   cout << "Enter Data:";
   cin >> data;
   List *newnode = new List(data);
 
-  if (first == NULL)
-    first = newnode;
+  if (*ptr == NULL)
+    *ptr = newnode;
   else {
-    newnode->next = first;
-    cout << "Next Node Data:" << newnode->next->data << endl;
-    first = newnode;
-    cout << "First Node Data:" << first->data << endl;
+    newnode->next = *ptr;
+    *ptr = newnode;
   }
   cout << "New node: " << newnode->data << " added successfully" << endl;
+}
+
+void removefirstnode(List **ptr) {
+  int data;
+  if (*ptr != NULL) {
+    data = (*ptr)->data;
+    *ptr = (*ptr)->next;
+  }
+  cout << "Removed node: " << data << endl;
 }
 
 int main() {
@@ -91,6 +98,7 @@ int main() {
     cout << "6-Delete first node" << endl;
     cout << "Enter Choice:";
     cin >> choice;
+    cout << endl;
 
     switch (choice) {
     case 1:
@@ -116,7 +124,11 @@ int main() {
       break;
 
     case 5:
-      insertfirstnode(first);
+      insertfirstnode(&first);
+      break;
+
+    case 6:
+      removefirstnode(&first);
       break;
     }
   }
